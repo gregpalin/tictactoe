@@ -1,0 +1,99 @@
+import random
+
+theBoard = {'top-L':' ', 'top-M':' ', 'top-R':' ',
+			'mid-L':' ', 'mid-M':' ', 'mid-R':' ',
+			'low-L':' ', 'low-M':' ', 'low-R':' '}
+
+def printBoard(board):
+	print(board['top-L'] + '|' + board['top-M'] + '|'+ board['top-R'])
+	print('-+-+-')
+	print(board['mid-L'] + '|' + board['mid-M'] + '|'+ board['mid-R'])
+	print('-+-+-')
+	print(board['low-L'] + '|' + board['low-M'] + '|'+ board['low-R'])
+
+def getNumberOfPlayers():
+	print('Welcome to Tic-tac-toe!')
+	numberOfPlayers = 0
+	while numberOfPlayers != 1 and numberOfPlayers != 2:
+		print('How many players?  \n1 = single player\n2 = two players')
+		numberOfPlayers = int(input())
+	return numberOfPlayers
+
+def randomizeTurn():
+	if random.randint(1,2) == 1:
+		return 'X'
+	else:
+		return 'O'
+
+def getValidInput():
+	move = 0
+	while move not in theBoard:
+		printBoard(theBoard)
+		print('Please make a selection: ', end='')
+		move = input()
+		if move in theBoard:
+			return move
+		else:
+			print('Invalid selection')
+
+movesList = ['top-L', 'top-M', 'top-R', 'mid-L', 'mid-M', 'mid-R', 'low-L', 'low-M', 'low-R']
+def humanOrComputer(turn, numberOfPlayers):
+	while True:
+		#if it is one player, the computer will always be 'O'
+		if turn == 'O' and numberOfPlayers == 1:
+			move = movesList[random.randint(0,8)]
+		else:
+			move = getValidInput()
+			
+		if theBoard[move] == ' ':
+			theBoard[move] = turn
+			break		
+		else:
+			print('Invalid move.')
+
+def winCheck(turn):
+	#horizontal winning combinations
+	if theBoard['top-L'] == turn and theBoard['top-M'] == turn and theBoard['top-R'] == turn:
+		return 'over'
+	elif theBoard['mid-L'] == turn and theBoard['mid-M'] == turn and theBoard['mid-R'] == turn:
+		return 'over'
+	elif theBoard['low-L'] == turn and theBoard['low-M'] == turn and theBoard['low-R'] == turn:
+		return 'over'
+	#vertical winning combinations
+	elif theBoard['top-L'] == turn and theBoard['mid-L'] == turn and theBoard['low-L'] == turn:
+		return 'over'
+	elif theBoard['top-M'] == turn and theBoard['mid-M'] == turn and theBoard['low-M'] == turn:
+		return 'over'
+	elif theBoard['top-R'] == turn and theBoard['mid-R'] == turn and theBoard['low-R'] == turn:
+		return 'over'
+	#diagonal winning combinations
+	elif theBoard['top-L'] == turn and theBoard['mid-M'] == turn and theBoard['low-R'] == turn:
+		return 'over'
+	elif theBoard['top-R'] == turn and theBoard['mid-M'] == turn and theBoard['low-L'] == turn:
+		return 'over'
+	else:
+		return 'cont'
+
+game = 'cont'
+def mainGame():
+	numberOfPlayers = getNumberOfPlayers()
+	print('Number of players: ', numberOfPlayers)
+	turn = randomizeTurn()
+	print(turn, ' will go first')
+	for i in range(9):
+		humanOrComputer(turn, numberOfPlayers)
+		game = winCheck(turn)
+		if turn == 'X' and game == 'cont':
+			turn = 'O'
+		elif turn == 'O' and game == 'cont':
+			turn = 'X'
+		else:
+			break
+	if game == 'cont':
+		return 'Tie'
+	else:
+		return turn
+
+turn = mainGame()
+printBoard(theBoard)
+print(turn , 'wins')
